@@ -1,19 +1,52 @@
 import TodoItem from './TodoItem'
 import './TodoList.css'
+import type { ITodoItem } from '../interface'
 
-function TodoList({ data, onToggle }: any) {
-    return (
-        <div className='todo-list'>
-            <div className='todo-header'>
-                <input type="checkbox" className='todo-checkbox' />
-                <p className='todo-header-text'>할 일</p>
-                <button className='todo-header-button'>삭제</button>
-            </div>
-            <div>
-                {data.map((item: any) => <TodoItem text={item.text} completed={item.completed} onToggle={() => onToggle(item.id)} />)}
-            </div>
-        </div>
-    )
+function TodoList({
+  data,
+  onToggle,
+  onToggleAll,
+  onDelete,
+  onDeleteCompleted,
+  onUpdate,
+}: any) {
+  const isAllCompleted =
+    data.length > 0 && data.every((item: ITodoItem) => item.completed)
+  const completedCount = data.filter((item: ITodoItem) => item.completed).length
+
+  return (
+    <div className="todo-list">
+      <div className="todo-header">
+        <input
+          type="checkbox"
+          className="todo-checkbox"
+          checked={isAllCompleted}
+          onChange={(e) => onToggleAll(e.target.checked)}
+        />
+        <p className="todo-header-text">할 일</p>
+        {completedCount > 0 && (
+          <button
+            className="todo-header-button"
+            onClick={onDeleteCompleted}
+          >
+            {completedCount}개 선택 삭제
+          </button>
+        )}
+      </div>
+      <div>
+        {data.map((item: any) => (
+          <TodoItem
+            id={item.id}
+            text={item.text}
+            completed={item.completed}
+            onToggle={() => onToggle(item.id)}
+            onDelete={() => onDelete(item.id)}
+            onUpdate={onUpdate}
+          />
+        ))}
+      </div>
+    </div>
+  )
 }
 
 export default TodoList

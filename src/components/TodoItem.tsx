@@ -1,6 +1,17 @@
-import "./TodoItem.css"
+import { useState } from 'react'
+import './TodoItem.css'
 
-function TodoItem({ text, completed, onToggle }: any) {
+function TodoItem({ id, text, completed, onToggle, onDelete, onUpdate }: any) {
+  const [edit, setEdit] = useState(false)
+
+  const handleEdit = () => {
+    setEdit((prev) => !prev)
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(id, e.target.value)
+  }
+
   return (
     <div className="todo-item">
       <input
@@ -9,9 +20,33 @@ function TodoItem({ text, completed, onToggle }: any) {
         checked={completed}
         onChange={onToggle}
       />
-      <p className="todo-item-text">{text}</p>
-      <button className="todo-item-button">수정</button>
-      <button className="todo-item-button">삭제</button>
+      {edit ? (
+        <input
+          className="todo-edit-input"
+          value={text}
+          onChange={handleChange}
+        />
+      ) : (
+        <p
+          className={['todo-item-text', completed && 'completed']
+            .filter(Boolean)
+            .join(' ')}
+        >
+          {text}
+        </p>
+      )}
+      <button
+        className="todo-item-button"
+        onClick={handleEdit}
+      >
+        수정
+      </button>
+      <button
+        className="todo-item-button"
+        onClick={onDelete}
+      >
+        삭제
+      </button>
     </div>
   )
 }
